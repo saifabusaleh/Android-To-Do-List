@@ -172,14 +172,13 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             updateTd.setToDoNotes(todoNote.getText().toString());
             if (cb.isChecked()) {
                 updateTd.setToDoTaskStatus("Complete");
-            } else {
             }
             updateTd.setToDoTaskStatus("Incomplete");
             SqliteHelper mysqlite = new SqliteHelper(view.getContext());
             Cursor b = mysqlite.updateTask(updateTd);
             ToDoDataArrayList.set(position, updateTd);
             if (b.getCount() == 0) {
-                //Toast.makeText(view.getContext(), "Some thing went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "Some thing went wrong", Toast.LENGTH_SHORT).show();
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -187,10 +186,9 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
                         notifyDataSetChanged();
                     }
                 });
-                dialog.hide();
-            } else {
-                dialog.hide();
             }
+            dialog.hide();
+
         } else {
             Toast.makeText(view.getContext(), "Please enter To Do Task", Toast.LENGTH_SHORT).show();
         }
