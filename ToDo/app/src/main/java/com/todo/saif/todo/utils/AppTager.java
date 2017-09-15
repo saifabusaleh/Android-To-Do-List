@@ -1,8 +1,6 @@
 package com.todo.saif.todo.utils;
 
-/**
- * Created by deepmetha on 8/28/16.
- */
+
 public class AppTager {
 
     public static String getTag() {

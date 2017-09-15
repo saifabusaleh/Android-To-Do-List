@@ -1,8 +1,6 @@
 package com.todo.saif.todo.modal;
 
-/**
- * Created by deepmetha on 8/28/16.
- */
+
 public class ToDoData {
     int ToDoID;
     String ToDoTaskDetails, ToDoTaskPrority, ToDoTaskStatus, ToDoNotes;

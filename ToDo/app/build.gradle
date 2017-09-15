@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "com.todo.deepmetha.todo"
+        applicationId "com.todo.saif.todo"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1

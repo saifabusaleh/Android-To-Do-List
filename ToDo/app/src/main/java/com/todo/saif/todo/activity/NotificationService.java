@@ -13,9 +13,7 @@ import android.support.annotation.Nullable;
 
 import com.todo.saif.todo.R;
 
-/**
- * Created by deepmetha on 8/30/16.
- */
+
 public class NotificationService extends Service {
 
     private NotificationManager mManager;

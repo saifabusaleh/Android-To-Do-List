@@ -29,13 +29,11 @@ import com.todo.saif.todo.sqlite.SqliteHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by deepmetha on 8/28/16.
- */
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder> {
     private List<ToDoData> ToDoDataArrayList = new ArrayList<ToDoData>();
     private Context context;
-   // private boolean oneClick=false;//boolean to ensure that we clicked only once in edit or delete
+
+    // private boolean oneClick=false;//boolean to ensure that we clicked only once in edit or delete
     public ToDoListAdapter(ArrayList<ToDoData> toDoDataArrayList, Context context) {
         this.ToDoDataArrayList = toDoDataArrayList;
         this.context = context;
@@ -78,7 +76,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onDeleteTask(td,view);
+                onDeleteTask(td, view, position);
 
             }
         });
@@ -87,7 +85,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             @Override
             public void onClick(View view) {
                 onEditTask(view, td, position);
-               // oneClick=true;
             }
         });
     }
@@ -98,30 +95,20 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         return ToDoDataArrayList.size();
     }
 
-    private void onDeleteTask(ToDoData td, View view) {
+    private void onDeleteTask(ToDoData td, View view, final int position) {
         int id = td.getToDoID();
         SqliteHelper mysqlite = new SqliteHelper(view.getContext());
         Cursor b = mysqlite.deleteTask(id);
         if (b.getCount() == 0) {
             Toast.makeText(view.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    // Code here will run in UI thread
-                            /* ToDoDataArrayList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position,ToDoDataArrayList.size()); */
-                    //notifyDataSetChanged();
-                }
-            });
+            ToDoDataArrayList.remove(position);
+            notifyDataSetChanged();
         } else {
-            Toast.makeText(view.getContext(), "Deleted else", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "Cannot find required item in database", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void onEditTask(View view, final ToDoData td, final int position) {
-  //      if(oneClick == true) {
-  //          return;
- //       }
         final Dialog dialog = new Dialog(view.getContext());
         dialog.setContentView(R.layout.custom_dailog);
         dialog.show();
@@ -153,64 +140,66 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                //oneClick = false;
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //oneClick= false;
-                EditText todoText = (EditText) dialog.findViewById(R.id.input_task_desc);
-                EditText todoNote = (EditText) dialog.findViewById(R.id.input_task_notes);
-                CheckBox cb = (CheckBox) dialog.findViewById(R.id.checkbox);
-                if (todoText.getText().length() >= 2) {
-                    RadioGroup proritySelection = (RadioGroup) dialog.findViewById(R.id.toDoRG);
-                    String RadioSelection = new String();
-                    if (proritySelection.getCheckedRadioButtonId() != -1) {
-                        int id = proritySelection.getCheckedRadioButtonId();
-                        View radiobutton = proritySelection.findViewById(id);
-                        int radioId = proritySelection.indexOfChild(radiobutton);
-                        RadioButton btn = (RadioButton) proritySelection.getChildAt(radioId);
-                        RadioSelection = (String) btn.getText();
-                    }
-                    ToDoData updateTd = new ToDoData();
-                    updateTd.setToDoID(td.getToDoID());
-                    updateTd.setToDoTaskDetails(todoText.getText().toString());
-                    updateTd.setToDoTaskPrority(RadioSelection);
-                    updateTd.setToDoNotes(todoNote.getText().toString());
-                    if (cb.isChecked()) {
-                        updateTd.setToDoTaskStatus("Complete");
-                    } else {
-                        updateTd.setToDoTaskStatus("Incomplete");
-                    }
-                    SqliteHelper mysqlite = new SqliteHelper(view.getContext());
-                    Cursor b = mysqlite.updateTask(updateTd);
-                    ToDoDataArrayList.set(position, updateTd);
-                    if (b.getCount() == 0) {
-                        //Toast.makeText(view.getContext(), "Some thing went wrong", Toast.LENGTH_SHORT).show();
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Code here will run in UI thread
-                                notifyDataSetChanged();
-                            }
-                        });
-                        dialog.hide();
-                    } else {
-                        dialog.hide();
-                    }
-                } else {
-                    Toast.makeText(view.getContext(), "Please enter To Do Task", Toast.LENGTH_SHORT).show();
-                }
+                saveToDoItemOnEdit(dialog,td, view, position);
+
             }
         });
+    }
+
+    private void saveToDoItemOnEdit(Dialog dialog, ToDoData td, View view, int position) {
+        EditText todoText = (EditText) dialog.findViewById(R.id.input_task_desc);
+        EditText todoNote = (EditText) dialog.findViewById(R.id.input_task_notes);
+        CheckBox cb = (CheckBox) dialog.findViewById(R.id.checkbox);
+        if (todoText.getText().length() >= 2) {
+            RadioGroup proritySelection = (RadioGroup) dialog.findViewById(R.id.toDoRG);
+            String RadioSelection = new String();
+            if (proritySelection.getCheckedRadioButtonId() != -1) {
+                int id = proritySelection.getCheckedRadioButtonId();
+                View radiobutton = proritySelection.findViewById(id);
+                int radioId = proritySelection.indexOfChild(radiobutton);
+                RadioButton btn = (RadioButton) proritySelection.getChildAt(radioId);
+                RadioSelection = (String) btn.getText();
+            }
+            ToDoData updateTd = new ToDoData();
+            updateTd.setToDoID(td.getToDoID());
+            updateTd.setToDoTaskDetails(todoText.getText().toString());
+            updateTd.setToDoTaskPrority(RadioSelection);
+            updateTd.setToDoNotes(todoNote.getText().toString());
+            if (cb.isChecked()) {
+                updateTd.setToDoTaskStatus("Complete");
+            } else {
+            }
+            updateTd.setToDoTaskStatus("Incomplete");
+            SqliteHelper mysqlite = new SqliteHelper(view.getContext());
+            Cursor b = mysqlite.updateTask(updateTd);
+            ToDoDataArrayList.set(position, updateTd);
+            if (b.getCount() == 0) {
+                //Toast.makeText(view.getContext(), "Some thing went wrong", Toast.LENGTH_SHORT).show();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Code here will run in UI thread
+                        notifyDataSetChanged();
+                    }
+                });
+                dialog.hide();
+            } else {
+                dialog.hide();
+            }
+        } else {
+            Toast.makeText(view.getContext(), "Please enter To Do Task", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public class ToDoListViewHolder extends RecyclerView.ViewHolder {
         private TextView todoDetails, todoNotes;
         private ImageButton proprityColor;
         private ImageView edit, deleteButton;
-        // ToDoData toDoData;
 
         public ToDoListViewHolder(View view, final Context context) {
             super(view);
@@ -226,8 +215,5 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
                 }
             });
         }
-
-
-
     }
 }
