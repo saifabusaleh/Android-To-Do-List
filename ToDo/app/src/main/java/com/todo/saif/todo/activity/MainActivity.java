@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mysqlite = new SqliteHelper(getApplicationContext());
         Cursor result = mysqlite.selectAllData();
         tdd.clear();
+        tddCopy.clear();
         if (result.getCount() == 0) {
             adapter.notifyDataSetChanged();
             Toast.makeText(getApplicationContext(), "No Tasks", Toast.LENGTH_SHORT).show();

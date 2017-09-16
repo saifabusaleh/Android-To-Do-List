@@ -87,6 +87,8 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
                 onEditTask(view, td, position);
             }
         });
+
+        holder.set
     }
 
 

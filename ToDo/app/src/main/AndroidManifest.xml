@@ -42,11 +42,6 @@
 
         <activity android:name=".activity.TaskActivity" />
         <activity android:name=".activity.AboutActivity" />
-        <activity android:name=".activity.SearchResultsActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

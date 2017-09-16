@@ -81,7 +81,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         Date currentTime = Calendar.getInstance().getTime();
         mDateEditText.setText(formatDate(dateFormat, currentTime));
         mTimeEditText.setText(formatDate(timeFormat, currentTime));
-      //  mUserReminderDate = calendar.getTime();
+        Calendar calendar = Calendar.getInstance();
+        mUserReminderDate = calendar.getTime();
     }
 
 
