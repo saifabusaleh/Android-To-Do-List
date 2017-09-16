@@ -15,7 +15,7 @@
 
         <!-- Splash Screen -->
         <activity
-            android:name="com.todo.saif.todo.activity.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,16 +24,29 @@
             </intent-filter>
         </activity>
         <!-- Main Activity -->
-        <activity android:name="com.todo.saif.todo.activity.MainActivity" />
+        <activity android:name=".activity.MainActivity">
 
-        <receiver android:name="com.todo.saif.todo.activity.AlarmReceiver" />
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
+
+        </activity>
+
+        <receiver android:name=".activity.AlarmReceiver" />
 
         <service
-            android:name="com.todo.saif.todo.activity.NotificationService"
+            android:name=".activity.NotificationService"
             android:enabled="true" />
 
-        <activity android:name="com.todo.saif.todo.activity.TaskActivity" />
-        <activity android:name="com.todo.saif.todo.activity.AboutActivity"></activity>
+        <activity android:name=".activity.TaskActivity" />
+        <activity android:name=".activity.AboutActivity" />
+        <activity android:name=".activity.SearchResultsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

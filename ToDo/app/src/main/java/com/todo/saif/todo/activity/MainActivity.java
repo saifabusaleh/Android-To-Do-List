@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<ToDoData> tdd = new ArrayList<>();
+    ArrayList<ToDoData> tddCopy = new ArrayList<>();
     private static SqliteHelper mysqlite;
     private SwipeRefreshLayout swipeRefreshLayout;
     public static final int RETURN_VALUE_FOR_SAVE = 1;
@@ -37,6 +40,38 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main2, menu);
+        // Associate searchable configuration with the SearchView
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                //This function gets called when trying to close the search
+                updateCardView();
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //  Toast.makeText(getApplicationContext(), "haha " + newText, Toast.LENGTH_SHORT).show();
+                filter(newText);
+
+                return false;
+            }
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filter(query);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -47,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 Intent i = new Intent(this, AboutActivity.class);
                 startActivity(i);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -61,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         layoutManager = new LinearLayoutManager(getApplicationContext());
         addTask = (FloatingActionButton) findViewById(R.id.imageButton);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        adapter = new ToDoListAdapter(tdd, getApplicationContext());
+        adapter = new ToDoListAdapter(tddCopy, getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -101,12 +135,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout.setRefreshing(true);
         mysqlite = new SqliteHelper(getApplicationContext());
         Cursor result = mysqlite.selectAllData();
+        tdd.clear();
         if (result.getCount() == 0) {
-            tdd.clear();
             adapter.notifyDataSetChanged();
             Toast.makeText(getApplicationContext(), "No Tasks", Toast.LENGTH_SHORT).show();
         } else {
-            tdd.clear();
             adapter.notifyDataSetChanged();
             while (result.moveToNext()) {
                 ToDoData tddObj = new ToDoData();
@@ -116,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 tddObj.setToDoTaskStatus(result.getString(3));
                 tddObj.setToDoNotes(result.getString(4));
                 tdd.add(tddObj);
+                tddCopy.add(tddObj);
             }
             adapter.notifyDataSetChanged();
         }
@@ -151,5 +185,24 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         }
     }//onActivityResult
+
+
+    // Filter Class
+    private void filter(String text) {
+        text = text.toLowerCase();
+        tddCopy.clear();
+        if (text.length() == 0) {
+            return;
+        }
+        tddCopy.clear();
+        for (ToDoData toDoItem : tdd) {
+            if (toDoItem.getToDoTaskDetails().toLowerCase()
+                    .contains(text.toLowerCase())) {
+                tddCopy.add(toDoItem);
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+    }
 
 }
