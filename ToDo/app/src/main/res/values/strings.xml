@@ -8,6 +8,10 @@
     <string name="choose_date">Date</string>
     <string name="choose_time">Time</string>
     <string name="no_data_available">No Tasks to show, click + to add new Task</string>
+    <string name="facebook_app_id">520270708310083</string>
+    <string name="fb_login_protocol_scheme">fb520270708310083</string>
+    <string name="fb_login_canceled">Facebook login has been canceled</string>
+    <string name="fb_login_error">Facebook login have error</string>
     <string-array name="time">
         <item>Minutes</item>
         <item>Hours</item>

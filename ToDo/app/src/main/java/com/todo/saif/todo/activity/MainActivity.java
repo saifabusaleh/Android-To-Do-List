@@ -17,6 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.todo.saif.todo.LoginActivity;
 import com.todo.saif.todo.R;
 import com.todo.saif.todo.adapters.ToDoListAdapter;
 import com.todo.saif.todo.modal.ToDoData;
@@ -82,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 Intent i = new Intent(this, AboutActivity.class);
                 startActivity(i);
                 return true;
+
+            case R.id.logoutMenuItem:
+                LoginManager.getInstance().logOut();
+                goLoginScreen();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -90,7 +99,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+
+        if(AccessToken.getCurrentAccessToken() == null ) {
+            goLoginScreen();
+        }
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_s);
         layoutManager = new LinearLayoutManager(getApplicationContext());
         addTask = (FloatingActionButton) findViewById(R.id.imageButton);
@@ -115,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             }
         });
+    }
+
+    private void goLoginScreen() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     public void isEmptyView(View emptyView) {
@@ -188,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }//onActivityResult
 
 
-    // Filter Class
+    // Filter method
     private void filter(String text) {
         text = text.toLowerCase();
         tddCopy.clear();

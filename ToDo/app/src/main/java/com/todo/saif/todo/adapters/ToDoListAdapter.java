@@ -1,7 +1,10 @@
 package com.todo.saif.todo.adapters;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.todo.saif.todo.R;
+import com.todo.saif.todo.activity.AlarmReceiver;
+import com.todo.saif.todo.activity.MainActivity;
+import com.todo.saif.todo.activity.TaskActivity;
 import com.todo.saif.todo.modal.ToDoData;
 import com.todo.saif.todo.sqlite.SqliteHelper;
 
@@ -88,7 +94,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             }
         });
 
-        holder.set
     }
 
 
@@ -180,7 +185,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             Cursor b = mysqlite.updateTask(updateTd);
             ToDoDataArrayList.set(position, updateTd);
             if (b.getCount() == 0) {
-                Toast.makeText(view.getContext(), "Some thing went wrong", Toast.LENGTH_SHORT).show();
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -208,12 +212,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             proprityColor = (ImageButton) view.findViewById(R.id.typeCircle);
             edit = (ImageView) view.findViewById(R.id.edit);
             deleteButton = (ImageView) view.findViewById(R.id.delete);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(view.getContext(), "Clicked", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 }

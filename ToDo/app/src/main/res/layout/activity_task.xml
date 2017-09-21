@@ -27,17 +27,17 @@
                 android:id="@+id/input_task_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Notes"
+                android:hint="To Do task notes"
                 android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add New Task"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/primary" />
+        <!--<TextView-->
+            <!--android:id="@+id/textView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Add New Task"-->
+            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+            <!--android:textColor="@color/primary_text" />-->
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/toDoText"
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:hint="To Do"
+                android:hint="To Do task name"
                 android:inputType="text">
 
                 <requestFocus />
@@ -84,6 +84,8 @@
                 android:id="@+id/high"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="60dp"
+
                 android:gravity="center"
                 android:text="High" />
 
@@ -91,6 +93,7 @@
                 android:id="@+id/normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="60dp"
                 android:gravity="center"
                 android:text="Normal" />
 
@@ -172,44 +175,43 @@
 
 
         </LinearLayout>
-
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_save"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+        
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/linearLayout"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="15dp"
-            android:background="@android:color/transparent"
-            android:elevation="10dp"
-            android:padding="12dp"
-            android:text="Save"
-            android:textColor="@color/primary"
-            android:textColorLink="@color/primary"
-            android:textSize="15sp">
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:paddingTop="350dp">
 
-        </android.support.v7.widget.AppCompatButton>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_save"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_cancel"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/btn_save"
-            android:layout_toLeftOf="@+id/btn_save"
-            android:layout_toStartOf="@+id/btn_save"
-            android:background="@android:color/transparent"
-            android:elevation="10dp"
-            android:padding="12dp"
-            android:text="Cancel"
-            android:textColor="@color/primary_text"
-            android:textColorLink="@color/primary"
-            android:textSize="15sp">
+                android:text="Save"
+                android:textColor="@color/primary"
+                android:textColorLink="@color/primary"
+                android:textSize="15sp">
 
-        </android.support.v7.widget.AppCompatButton>
+            </android.support.v7.widget.AppCompatButton>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_cancel"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+
+                android:text="Cancel"
+                android:textColor="@color/primary"
+                android:textColorLink="@color/primary"
+                android:textSize="15sp">
+
+            </android.support.v7.widget.AppCompatButton>
+        </LinearLayout>
+
 
     </RelativeLayout>
 

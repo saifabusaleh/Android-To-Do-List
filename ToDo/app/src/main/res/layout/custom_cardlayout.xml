@@ -22,12 +22,10 @@
 
             <ImageButton
                 android:id="@+id/typeCircle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="2dp"
+                android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="9dp"
+            android:scaleType="fitXY"
                 android:background="@drawable/type" />
 
             <TextView
@@ -40,7 +38,7 @@
                 android:layout_toRightOf="@+id/typeCircle"
                 android:fontFamily="sans-serif"
                 android:text="Task Name"
-                android:textColor="@color/primary_text"
+                android:textColor="@color/black"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -53,7 +51,7 @@
                 android:layout_below="@+id/edit"
                 android:fontFamily="sans-serif"
                 android:text="Task Description"
-                android:textColor="@color/primary_text"
+                android:textColor="@color/black"
                 android:textSize="14dp" />
 
             <ImageView

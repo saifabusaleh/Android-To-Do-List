@@ -6,7 +6,12 @@
 
     <item android:title="About"
         android:id="@+id/aboutMeMenuItem"
-        android:showAsAction="never"
+        app:showAsAction="never"
+        />
+
+    <item android:title="Log-Out"
+        android:id="@+id/logoutMenuItem"
+        app:showAsAction="never"
         />
 
     <item
