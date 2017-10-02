@@ -87,10 +87,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
 
     private void showDatePicker() {
-        Date date;
-        date = new Date();
+
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(new Date());
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -100,10 +99,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     private void showTimePicker() {
-        Date date;
-        date = new Date();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(new Date());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
