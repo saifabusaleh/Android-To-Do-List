@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                addTask.setEnabled(false);
                 Intent intent = new Intent(MainActivity.this, TaskActivity.class);
                 MainActivity.this.startActivityForResult(intent, 1);
 
@@ -201,10 +202,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             //Saves toDoItem into database
             ContentValues contentValues = data.getParcelableExtra("ToDoItem");
             insertIntoDatabase(contentValues);
+
         } else if (resultCode == RETURN_VALUE_FOR_CANCEL)//cancel
         {
 
         }
+        addTask.setEnabled(true);
+
     }//onActivityResult
 
 
