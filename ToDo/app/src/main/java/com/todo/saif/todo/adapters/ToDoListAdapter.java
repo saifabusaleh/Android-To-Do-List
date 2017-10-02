@@ -1,10 +1,7 @@
 package com.todo.saif.todo.adapters;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,9 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.todo.saif.todo.R;
-import com.todo.saif.todo.activity.AlarmReceiver;
-import com.todo.saif.todo.activity.MainActivity;
-import com.todo.saif.todo.activity.TaskActivity;
 import com.todo.saif.todo.modal.ToDoData;
 import com.todo.saif.todo.sqlite.SqliteHelper;
 
@@ -38,7 +32,6 @@ import java.util.List;
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder> {
     private List<ToDoData> ToDoDataArrayList = new ArrayList<ToDoData>();
     private Context context;
-
     // private boolean oneClick=false;//boolean to ensure that we clicked only once in edit or delete
     public ToDoListAdapter(ArrayList<ToDoData> toDoDataArrayList, Context context) {
         this.ToDoDataArrayList = toDoDataArrayList;
@@ -107,11 +100,10 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         SqliteHelper mysqlite = new SqliteHelper(view.getContext());
         Cursor b = mysqlite.deleteTask(id);
         if (b.getCount() == 0) {
-            Toast.makeText(view.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
             ToDoDataArrayList.remove(position);
             notifyDataSetChanged();
         } else {
-            Toast.makeText(view.getContext(), "Cannot find required item in database", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "@string/cannot_find_item_in_db", Toast.LENGTH_SHORT).show();
         }
     }
 

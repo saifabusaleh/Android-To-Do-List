@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private static RecyclerView recyclerView;
     private static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<ToDoData> tdd = new ArrayList<>();
-    ArrayList<ToDoData> tddCopy = new ArrayList<>();
+    private ArrayList<ToDoData> toDoListCopy = new ArrayList<>();
+    ArrayList<ToDoData> toDoList = new ArrayList<>();
     private static SqliteHelper mysqlite;
     private SwipeRefreshLayout swipeRefreshLayout;
     public static final int RETURN_VALUE_FOR_SAVE = 1;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         layoutManager = new LinearLayoutManager(getApplicationContext());
         addTask = (FloatingActionButton) findViewById(R.id.imageButton);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        adapter = new ToDoListAdapter(tddCopy, getApplicationContext());
+        adapter = new ToDoListAdapter(toDoList, getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -156,11 +156,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout.setRefreshing(true);
         mysqlite = new SqliteHelper(getApplicationContext());
         Cursor result = mysqlite.selectAllData();
-        tdd.clear();
-        tddCopy.clear();
+        toDoListCopy.clear();
+        toDoList.clear();
         if (result.getCount() == 0) {
             adapter.notifyDataSetChanged();
-            Toast.makeText(getApplicationContext(), "No Tasks", Toast.LENGTH_SHORT).show();
         } else {
             adapter.notifyDataSetChanged();
             while (result.moveToNext()) {
@@ -170,8 +169,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 tddObj.setToDoTaskPrority(result.getString(2));
                 tddObj.setToDoTaskStatus(result.getString(3));
                 tddObj.setToDoNotes(result.getString(4));
-                tdd.add(tddObj);
-                tddCopy.add(tddObj);
+                toDoListCopy.add(tddObj);
+                toDoList.add(tddObj);
             }
             adapter.notifyDataSetChanged();
         }
@@ -190,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         if (b) {
             updateCardView();
         } else {
-            Toast.makeText(getApplicationContext(), "Some thing went wrong with inserting into database", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "@string/write_to_db_error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -203,9 +202,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             ContentValues contentValues = data.getParcelableExtra("ToDoItem");
             insertIntoDatabase(contentValues);
 
-        } else if (resultCode == RETURN_VALUE_FOR_CANCEL)//cancel
-        {
-
         }
         addTask.setEnabled(true);
 
@@ -215,15 +211,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     // Filter method
     private void filter(String text) {
         text = text.toLowerCase();
-        tddCopy.clear();
         if (text.length() == 0) {
             return;
         }
-        tddCopy.clear();
-        for (ToDoData toDoItem : tdd) {
+        toDoList.clear();
+        for (ToDoData toDoItem : toDoListCopy) {
             if (toDoItem.getToDoTaskDetails().toLowerCase()
                     .contains(text.toLowerCase())) {
-                tddCopy.add(toDoItem);
+                toDoList.add(toDoItem);
             }
         }
 

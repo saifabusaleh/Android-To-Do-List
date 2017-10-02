@@ -8,6 +8,8 @@
     <string name="choose_date">Date</string>
     <string name="choose_time">Time</string>
     <string name="no_data_available">No Tasks to show, click + to add new Task</string>
+    <string name="write_to_db_error">Some thing went wrong with inserting into database</string>
+    <string name="cannot_find_item_in_db">Cannot find required item in database</string>
     <string name="facebook_app_id">520270708310083</string>
     <string name="fb_login_protocol_scheme">fb520270708310083</string>
     <string name="fb_login_canceled">Facebook login has been canceled</string>
