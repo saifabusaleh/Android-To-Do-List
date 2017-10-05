@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.todo.saif.todo.R;
 import com.todo.saif.todo.adapters.ToDoListAdapter;
 import com.todo.saif.todo.modal.ToDoData;
 import com.todo.saif.todo.sqlite.SqliteHelper;
+import com.todo.saif.todo.utils.util.ItemTouchHelperClass;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private FloatingActionButton addTask;
     private static RecyclerView recyclerView;
-    private static RecyclerView.Adapter adapter;
+    private static ToDoListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<ToDoData> toDoListCopy = new ArrayList<>();
     ArrayList<ToDoData> toDoList = new ArrayList<>();
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private SwipeRefreshLayout swipeRefreshLayout;
     public static final int RETURN_VALUE_FOR_SAVE = 1;
     public static final int RETURN_VALUE_FOR_CANCEL = 2;
+    public ItemTouchHelper itemTouchHelper;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         adapter = new ToDoListAdapter(toDoList, getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent), getResources().getColor(R.color.divider));
         swipeRefreshLayout.post(new Runnable() {
@@ -130,6 +132,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             }
         });
+
+        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(adapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        recyclerView.setAdapter(adapter);
+
     }
 
     private void goLoginScreen() {
@@ -138,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         startActivity(intent);
     }
 
-    public void isEmptyView(View emptyView) {
+    public static void updateView(View emptyView) {
         //View emptyView= findViewById(R.id.toDoEmptyView);
 
         if (adapter != null && emptyView != null) {
@@ -175,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             adapter.notifyDataSetChanged();
         }
         swipeRefreshLayout.setRefreshing(false);
-        isEmptyView(findViewById(R.id.toDoEmptyView));
+        updateView(findViewById(R.id.toDoEmptyView));
     }
 
     @Override
@@ -202,6 +211,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             ContentValues contentValues = data.getParcelableExtra("ToDoItem");
             insertIntoDatabase(contentValues);
 
+            // after saving new task make sure to make the empty view invisible
+            updateView(findViewById(R.id.toDoEmptyView));
         }
         addTask.setEnabled(true);
 

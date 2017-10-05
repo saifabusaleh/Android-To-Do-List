@@ -23,19 +23,44 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.todo.saif.todo.R;
+import com.todo.saif.todo.activity.MainActivity;
 import com.todo.saif.todo.modal.ToDoData;
 import com.todo.saif.todo.sqlite.SqliteHelper;
+import com.todo.saif.todo.utils.util.ItemTouchHelperClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder> {
+public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder> implements ItemTouchHelperClass.ItemTouchHelperAdapter {
     private List<ToDoData> ToDoDataArrayList = new ArrayList<ToDoData>();
     private Context context;
+
     // private boolean oneClick=false;//boolean to ensure that we clicked only once in edit or delete
     public ToDoListAdapter(ArrayList<ToDoData> toDoDataArrayList, Context context) {
         this.ToDoDataArrayList = toDoDataArrayList;
         this.context = context;
+    }
+
+    @Override
+    public void onItemMoved(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(ToDoDataArrayList, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(ToDoDataArrayList, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemRemoved(final int position) {
+        final ToDoData td = ToDoDataArrayList.get(position);
+        onDeleteTask(td, this.context, position);
+
     }
 
     @Override
@@ -70,23 +95,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
                 break;
         }
         ((GradientDrawable) holder.proprityColor.getBackground()).setColor(color);
-
-        //delete button clicked call back
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onDeleteTask(td, view, position);
-
-            }
-        });
-        //edit button clicked call back
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onEditTask(view, td, position);
-            }
-        });
-
     }
 
 
@@ -95,15 +103,15 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         return ToDoDataArrayList.size();
     }
 
-    private void onDeleteTask(ToDoData td, View view, final int position) {
+    private void onDeleteTask(ToDoData td, Context context, final int position) {
         int id = td.getToDoID();
-        SqliteHelper mysqlite = new SqliteHelper(view.getContext());
+        SqliteHelper mysqlite = new SqliteHelper(context);
         Cursor b = mysqlite.deleteTask(id);
         if (b.getCount() == 0) {
             ToDoDataArrayList.remove(position);
             notifyDataSetChanged();
         } else {
-            Toast.makeText(view.getContext(), "@string/cannot_find_item_in_db", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "@string/cannot_find_item_in_db", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -144,7 +152,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveToDoItemOnEdit(dialog,td, view, position);
+                saveToDoItemOnEdit(dialog, td, view, position);
 
             }
         });
@@ -192,18 +200,22 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         }
     }
 
-    public class ToDoListViewHolder extends RecyclerView.ViewHolder {
+    public class ToDoListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView todoDetails, todoNotes;
         private ImageButton proprityColor;
-        private ImageView edit, deleteButton;
 
         public ToDoListViewHolder(View view, final Context context) {
             super(view);
+            view.setOnClickListener(this);
             todoDetails = (TextView) view.findViewById(R.id.toDoTextDetails);
             todoNotes = (TextView) view.findViewById(R.id.toDoTextNotes);
             proprityColor = (ImageButton) view.findViewById(R.id.typeCircle);
-            edit = (ImageView) view.findViewById(R.id.edit);
-            deleteButton = (ImageView) view.findViewById(R.id.delete);
+        }
+
+        @Override
+        public void onClick(View v) {
+            final ToDoData td = ToDoDataArrayList.get(getAdapterPosition());
+            onEditTask(v, td, getAdapterPosition());
         }
     }
 }

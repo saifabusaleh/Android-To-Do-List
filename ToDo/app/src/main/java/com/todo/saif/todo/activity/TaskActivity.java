@@ -115,7 +115,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         if (todoText.getText().length() < 1 || mUserReminderDate == null) {
             Toast.makeText(getApplicationContext(), "To Do Task name and Date and Time must be filled", Toast.LENGTH_SHORT).show();
-            //MainActivity.isEmptyView(findViewById(R.id.toDoEmptyView));
+            //MainActivity.updateView(findViewById(R.id.toDoEmptyView));
 
             return;
         }
