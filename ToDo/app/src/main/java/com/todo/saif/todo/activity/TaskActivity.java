@@ -153,7 +153,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         myIntent.putExtra("TaskPrority", TaskPrority);
         myIntent.putExtra("id", _id);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,
-                _id, myIntent, PendingIntent.FLAG_ONE_SHOT);
+                1, myIntent, 0);
         alarmManager.set(AlarmManager.RTC, Calendar_Object.getTimeInMillis(),
                 pendingIntent);
     }

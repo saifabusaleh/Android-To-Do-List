@@ -1,7 +1,10 @@
 package com.todo.saif.todo.adapters;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.todo.saif.todo.R;
+import com.todo.saif.todo.activity.AlarmReceiver;
 import com.todo.saif.todo.activity.MainActivity;
 import com.todo.saif.todo.modal.ToDoData;
 import com.todo.saif.todo.sqlite.SqliteHelper;
@@ -31,6 +35,8 @@ import com.todo.saif.todo.utils.util.ItemTouchHelperClass;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder> implements ItemTouchHelperClass.ItemTouchHelperAdapter {
     private List<ToDoData> ToDoDataArrayList = new ArrayList<ToDoData>();
@@ -105,6 +111,13 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
 
     private void onDeleteTask(ToDoData td, Context context, final int position) {
         int id = td.getToDoID();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(getApplicationContext(),
+                AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getApplicationContext(), 1, myIntent, 0);
+
+        alarmManager.cancel(pendingIntent);
         SqliteHelper mysqlite = new SqliteHelper(context);
         Cursor b = mysqlite.deleteTask(id);
         if (b.getCount() == 0) {
