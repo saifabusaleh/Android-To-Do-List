@@ -41,7 +41,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder> implements ItemTouchHelperClass.ItemTouchHelperAdapter {
     private List<ToDoData> ToDoDataArrayList = new ArrayList<ToDoData>();
     private Context context;
-
+    private boolean onEditing = false;
     // private boolean oneClick=false;//boolean to ensure that we clicked only once in edit or delete
     public ToDoListAdapter(ArrayList<ToDoData> toDoDataArrayList, Context context) {
         this.ToDoDataArrayList = toDoDataArrayList;
@@ -160,6 +160,8 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+                onEditing = false;
+
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
@@ -207,9 +209,11 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
                 });
             }
             dialog.hide();
+            onEditing = false;
 
         } else {
             Toast.makeText(view.getContext(), "Please enter To Do Task", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -228,7 +232,10 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ToDoLi
         @Override
         public void onClick(View v) {
             final ToDoData td = ToDoDataArrayList.get(getAdapterPosition());
-            onEditTask(v, td, getAdapterPosition());
+            if(onEditing==false) {
+                onEditing = true;
+                onEditTask(v, td, getAdapterPosition());
+            }
         }
     }
 }
